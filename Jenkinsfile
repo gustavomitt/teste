@@ -5,19 +5,23 @@ kind: Pod
 spec:
   containers:
   - name: curl
-    image: byrnedo/alpine-curl
+    image: tutum/curl
     command: ['cat']
     tty: true
 """
-pipeline {
-  agent none
-  stages {
-    stage('teste') {
-      container('curl') {
-        steps {
-          echo 'Oi!'
+  ) {
+    node(label) {
+        stage('Health') {
+            container('curl') {
+                git url: 'https://github.com/gustavomitt/teste.git'
+                sh "cat Jenkinsfile"
+                sh """
+                #!/bin/bash
+                echo "hello world"
+                """
+                sh "bash teste.sh"
+            }
         }
-      }
     }
-  }
 }
+
